@@ -4,12 +4,12 @@ int boardStartX = 200;
 int boardStartY = 200;   
 int board[9][9];         // Our game board 9x9 
 int currentColor = 0;    // Which color we're using now (0=no color)
-int colorCount[8] = {0}; // How many pieces of each color placed
+int colorCount[9] = {0}; // How many pieces of each color placed
 int maxPieces = 7;       // The maximum pieces per color
 bool gameRunning = true; //Check if the game is ongoing
 
 // Color array
-int colors[8] = {BLACK, RED, BLUE, GREEN, YELLOW, CYAN, LIGHTBLUE, MAGENTA};
+int colors[9] = {BLACK, LIGHTGRAY, RED, LIGHTMAGENTA, GREEN, YELLOW, CYAN, LIGHTBLUE, MAGENTA};
 
 
 void drawOnePiece(int row, int col, int colorNum)
@@ -104,7 +104,8 @@ void handleClick()
                 { char tmp[] = "Selected color from initial piece"; outtextxy(50,50,tmp); } //char tmp[] is a temporary variable of type char array to store the text message suggested by the vscde assistand cuz of the char error
                 delay(1000);
                 setcolor(BLACK);
-                bar(50, 50, 300, 70);
+                setfillstyle(SOLID_FILL, BLACK);
+                bar(50, 50, 600, 70);
             }
             // 2. we clicked on an empty square
             else if (squareValue == 0)
@@ -116,7 +117,8 @@ void handleClick()
                     { char tmp[] = "First click on a starting piece!"; outtextxy(50,50,tmp); }
                     delay(1000);
                     setcolor(BLACK);
-                    bar(50, 50, 300, 70);
+                    setfillstyle(SOLID_FILL, BLACK);
+                    bar(50, 50, 600, 70);
                     return;
                 }
                 
@@ -127,7 +129,7 @@ void handleClick()
                     { char tmp[] = "MAX 7 pieces per color!"; outtextxy(50,50,tmp); }
                     delay(1000);
                     setcolor(BLACK);
-                    bar(50, 50, 300, 70);
+                    bar(50, 50, 600, 70);
                     return;
                 }
                 
@@ -139,14 +141,17 @@ void handleClick()
                     colorCount[currentColor]++;
                     drawOnePiece(row, col, currentColor);
                     
+                    
                     //we show a success text
+                    
                     setcolor(colors[currentColor]);
                     char msg[50];
                     sprintf(msg, "Placed! %d/7 for this color", colorCount[currentColor]);
                     outtextxy(50, 50, msg);
-                    delay(500);
+                    delay(1000);
                     setcolor(BLACK);
-                    bar(50, 50, 300, 70);
+                    setfillstyle(SOLID_FILL, BLACK); //if we don't add this, the rectangle that deletes text ill show as any collor is chosen via mouseclick from the pieces because the filling color wasn't set to black
+                   bar(50, 50, 600, 70); //wider rectangle since i changed the text size, this appears in the next text lines too
                 }
                 else
                 {
@@ -155,7 +160,8 @@ void handleClick()
                     { char tmp[] = "Must touch the same color piece!"; outtextxy(50,50,tmp); }
                     delay(1000);
                     setcolor(BLACK);
-                    bar(50, 50, 300, 70);
+                    setfillstyle(SOLID_FILL, BLACK);
+                    bar(50, 50, 600, 70);
                 }
             }
             // 3. we clicked on the cell that already has a player's piece, a positive value so we don't do anything
@@ -169,7 +175,9 @@ void handleClick()
                 outtextxy(50, 50, msg);
                 delay(1000);
                 setcolor(BLACK);
-                bar(50, 50, 300, 70);
+                setfillstyle(SOLID_FILL, BLACK);
+               bar(50, 50, 400, 70);
+               
             }
         }
         else
@@ -195,14 +203,15 @@ void setupBoard()
     }
     
     // the 8 starting pieces from the start example
-    board[3][3] = -1;  // RED starting piece
-    board[4][3] = -2;  // BLUE starting piece  
-    board[5][1] = -3;  // GREEN starting piece
-    board[1][3] = -4;  // YELLOW starting piece
-    board[3][8] = -5;  // CYAN starting piece
-    board[6][8] = -6;  // LIGHTBLUE starting piece
-    board[2][7] = -7;  // MAGENTA starting piece
-    board[7][5] = -8;  // (Not used - color 0 is BLACK)
+    board[3][3] = -1;  // light gray starting piece already on board
+    board[4][3] = -2;  //  red sp on da  board
+    board[5][1] = -3;  // light magenta sp
+    board[1][3] = -4;  // green sp
+    board[3][8] = -5;  // yellow sp
+    board[6][8] = -6;  // cyan sp
+    board[2][7] = -7;  //  light blue sp
+    board[7][5] = -8;  //  magenta sp
+    //int colors[9] = {BLACK, LIGHTGRAY, RED, LIGHTMAGENTA, GREEN, YELLOW, CYAN, LIGHTBLUE, MAGENTA};
 }
 
 // Now wedraw the board with all the pieces and everything
@@ -212,15 +221,19 @@ void drawBoard()
     cleardevice();
     
     //present the game title
+    
     setcolor(WHITE);
-    settextstyle(DEFAULT_FONT, HORIZ_DIR, 2);
+    settextstyle(DEFAULT_FONT, HORIZ_DIR, 3);
     outtextxy(200, 30, "Splitting of the board game");
     
+    
     // Draw instructions
-    settextstyle(DEFAULT_FONT, HORIZ_DIR, 1);
-    outtextxy(50, 70, "1. Click colored circle to select color");
-    outtextxy(50, 90, "2. Place max 7 pieces of same color");
-    outtextxy(50, 110, "3. New piece must touch same color");
+    
+    settextstyle(DEFAULT_FONT, HORIZ_DIR, 2);
+    outtextxy(50, 70, (char*) "1. Click colored circle to select color");
+    outtextxy(50, 90, (char*)"2. Place max 7 pieces of same color");
+    outtextxy(50, 110, (char*)"3. New piece must touch same color");
+    outtextxy(50, 130, (char*)"4. Click outside the board to end game");
     
     // Draw board grid
     for (int row = 1; row <= 8; row++)
@@ -255,25 +268,27 @@ void drawBoard()
         }
     }
     
-    // Draw color counters on the right
+    // Draw color counters on the right 
+    
     setcolor(WHITE);
     outtextxy(650, 100, "PIECES PLACED:");
-    for (int i = 1; i <= 7; i++)
-    {
-        setcolor(colors[i]);
+    for (int i = 1; i <= 8; i++)//________________not working
+    {   setcolor(colors[i]);
         char counter[50];
         sprintf(counter, "Color %d: %d/7", i, colorCount[i]);
         outtextxy(650, 120 + i*20, counter);
     }
-    
-    // Show current color
-    setcolor(WHITE);
+
+
+    // Show current color_________________not working
+    /*setcolor(WHITE);
     char current[50];
     if (currentColor == 0)
         sprintf(current, "Current: NONE (click a circle)");
     else
         sprintf(current, "Current: Color %d", currentColor);
     outtextxy(650, 300, current);
+    */
 }
 
 // MAIN FUNCTION - Where program starts
@@ -291,7 +306,7 @@ int main()
     {
         handleClick();
         
-        // Small delay to prevent CPU overuse
+        // Small delay
         delay(10);
     }
     
